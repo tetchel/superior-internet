@@ -48,20 +48,45 @@ router.get('/', function(req, res, next) {
   });
 });
 
-router.get('/g/', function(req, res, next) {
-  return res.send("This is where my graph would go... IF I HAD ONE!!");
-});
+// Get graph data for all users
+router.get('/g/', function (req, res, next) {
 
-// Get info for all users.
-router.get('/u/', function (req, res, next) {
   req.app.usersdb.find({}).toArray(function(err, result) {
     if (err) {
       return res.status(500).send(err);
     }
 
-    return res.send(result);
+    let graphdata = { 'nodes' : [], 'edges' : [] };
+    var count = 0;
+    var edgecount = 0;
+    for (user of result) {
+      let visited = user[VISITED_KEY];
+
+      let node = {};
+      node['id'] = user[ID_PARAM];
+      node['label'] = count++;
+      node['x'] = rand(0, result.length);
+      node['y'] = rand(0, result.length);
+      node['size'] = visited.length;
+      graphdata.nodes.push(node);
+
+      for (visit of visited) {
+        let edge = {};
+        edge['id'] = edgecount++;
+        edge['source'] = node['id'];
+        edge['target'] = visit;
+        graphdata.edges.push(edge)
+      }
+    }
+    console.log("GraphData: " + util.inspect(graphdata));
+
+    return res.render('graph', { graphData: graphdata, /* remove the str later */ 'graphDataStr' : JSON.stringify(graphdata, null, 2) });
   });
 });
+
+function rand(min, max) {
+  return Math.floor(Math.random() * (max - min)) + min;
+}
 
 // Get info for a specific user.
 router.get('/u/:' + ID_PARAM, function(req, res, next) {
