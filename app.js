@@ -33,16 +33,29 @@ MongoClient.connect(dbUrl, {
     if (err) {
       console.log("DB INIT ERR");
       console.log(err);
-      return;
+
+      app.usersdb = {
+        findOne: function(object, callback) {
+          callback(undefined, "Dummy findOne result");
+        },
+        find: function(object, callback) {
+          callback(undefined, "Dummy find result");
+        },
+        insert: function(object, callback) {
+          callback(undefined, "Dummy insert result");
+        }
+      };
+      console.log("using dummy db");
+    }
+    else {  
+      console.log("Connected successfully to DB at " + dbUrl);
+
+      app.usersdb = client.db(dbName).collection(usersCollection);
     }
 
-    console.log("Connected successfully to DB at " + dbUrl);
-
-    app.usersdb = client.db(dbName).collection(usersCollection);
 
     // client.close();
   });
-
 
 
 app.use('/', indexRouter);
