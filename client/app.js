@@ -1,9 +1,26 @@
+import React, { Component } from 'react'
 import InferData from './infer-data'
+import Svg from './components/svg'
 
-const printToScreen = (text) => {
-  const el = document.createElement('pre')
-  el.textContent = text
-  document.body.append(el)
+// printToScreen(JSON.stringify(InferData(), null, 2))
+
+class App extends Component {
+  constructor() {
+    super()
+    console.log('app loaded')
+    console.log(InferData())
+  }
+
+  render() {
+    return (
+      <div>
+        <Svg></Svg>
+        <pre>
+          {JSON.stringify(InferData(), null, 2)}
+        </pre>
+      </div>
+    )
+  }
 }
 
-printToScreen(JSON.stringify(InferData(), null, 2))
+export default App
