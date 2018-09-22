@@ -3,8 +3,10 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "node ./bin/www",
-    "dev": "nodemon --watch routes/ --watch public/ ./bin/www"
+    "server": "node ./bin/www",
+    "server-dev": "nodemon --watch routes/ --watch public/ ./bin/www",
+    "client": "parcel watch client/app.js --out-dir dist/",
+    "start": "concurrently --kill-others \"npm run client\" \"npm run server\""
   },
   "dependencies": {
     "cookie-parser": "~1.4.3",
@@ -14,6 +16,11 @@
     "jade": "~1.11.0",
     "mongodb": "^3.1.6",
     "morgan": "~1.9.0",
+    "nodemon": "^1.18.4",
     "socket.io": "^2.1.1"
+  },
+  "devDependencies": {
+    "concurrently": "^4.0.1",
+    "parcel": "^1.9.7"
   }
 }
