@@ -43,8 +43,8 @@ router.get('/', function(req, res, next) {
       // We already know this device. Nothing to do here right now.
     }
 
-    // Replace this with the homepage, or whatever.
-    return res.render('index', { title: 'Express',  id : userId, isNew : !result });
+    // send the user to their page
+    res.redirect('/u/' + userId);
   });
 });
 
@@ -72,7 +72,7 @@ router.get('/u/:' + ID_PARAM, function(req, res, next) {
       return res.status(400).send("No user with ID " + userId);
     }
 
-    return res.render('user', { user: userId, visited: util.inspect(result.visited), data: util.inspect(result) })
+    return res.render('user', { title: userId, user: userId, visited: util.inspect(result.visited), data: util.inspect(result) })
   });
 });
 
