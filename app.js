@@ -30,18 +30,18 @@ MongoClient.connect(dbUrl, {
     reconnectInterval: 1000
   },
   function(err, client) {
-  if (err) {
-    console.log("DB INIT ERR");
-    console.log(err);
-    return;
-  }
+    if (err) {
+      console.log("DB INIT ERR");
+      console.log(err);
+      return;
+    }
 
-  console.log("Connected successfully to DB");
- 
-  app.usersdb = client.db(dbName).collection(usersCollection);
- 
-  // client.close();
-});
+    console.log("Connected successfully to DB");
+
+    app.usersdb = client.db(dbName).collection(usersCollection);
+
+    // client.close();
+  });
 
 
 
