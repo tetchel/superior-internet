@@ -43,6 +43,10 @@ MongoClient.connect(dbUrl, {
   // client.close();
 });
 
+const http = require('http').Server(app);
+const io = require('socket.io')(http);
+app.io = io;
+
 app.use('/', indexRouter);
 
 // catch 404 and forward to error handler

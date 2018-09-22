@@ -2,29 +2,44 @@ var express = require('express');
 var router = express.Router();
 
 const ID_PARAM = "id";
+const EVENT_NEW_USER = "new-user";
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  const userid = Date.now();
-  res.cookie(ID_PARAM, userid);
 
-  // see if this seed is taken already
-  req.app.db.find( { [userid] : {} }).toArray(function(err, result) {
-    if (err) {
-      console.log(err);
-    }
+  const isNewUser = !req.cookies[ID_PARAM]
 
-    const existing = typeof(result) !== 'undefined' && result.length > 0;
-    if (existing) {
-      console.log("user already exists somehow");
-      userid += Math.floor(Math.random() * 1000);
-    }
+  // const isNewUser = true;     // just for testing
 
-    console.log("Adding new user " + userid);
-    req.app.db.insertOne( { [userid] : {} })
-  });
+  if (isNewUser) {
+    const userId = Date.now();
+    res.cookie(ID_PARAM, userId);
+  
+    // Create the new user into the users database
+    req.app.db.find( { [userId] : {} }).toArray(function(err, result) {
+      if (err) {
+        reject(err);
+      }
 
-  res.render('index', { title: 'Express' });
+      // see if this userid is taken already
+      const existing = typeof(result) !== 'undefined' && result.length > 0;
+      if (existing) {
+        console.log("user already exists somehow");
+        userId += Math.floor(Math.random() * 1000);
+      }
+
+      console.log("Adding new user " + userId);
+      // TODO user data other than empty object
+      req.app.db.insertOne( { [userId] : {} })
+      req.app.io.emit(EVENT_NEW_USER, userId);
+
+      return res.render('index', { title: 'Express',  id : userId, isNew : true });
+    });
+  }
+  else {
+    return res.render('index', { title: 'Express',  id : req.cookies[ID_PARAM], isNew : false });
+  }
+
   
 });
 
