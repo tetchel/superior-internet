@@ -1,10 +1,17 @@
 var express = require('express');
 var router = express.Router();
 
+const fs = require('fs');
+const path = require('path');
+const util = require('util');
+
 const ID_PARAM = "id";
+const VISITED_KEY = "visited";
+const STATUS_KEY = "status";
+
+// how to include these in multiple files easily?
 const EVENT_NEW_USER = "new-user";
 const EVENT_NEW_VISIT = "new-visit";
-const VISITED_KEY = "visited";
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
@@ -12,7 +19,7 @@ router.get('/', function(req, res, next) {
   const idCookie = req.cookies[ID_PARAM]
   const userId = idCookie || Date.now();
 
-  req.app.db.findOne( { [ID_PARAM] : userId }, function(err, result) {
+  req.app.usersdb.findOne( { [ID_PARAM] : userId }, function(err, result) {
     if (err) {
       return res.status(500).send(err);
     }
@@ -31,8 +38,8 @@ router.get('/', function(req, res, next) {
     if (!result) {
       // Whether or not the user is actually new, they're missing from the DB.
       console.log("Adding new user " + userId);
-      req.app.db.insertOne( { [ID_PARAM] : userId, [VISITED_KEY] : [] });
-      req.app.io.emit(EVENT_NEW_USER, userId);
+      req.app.usersdb.insertOne( { [ID_PARAM] : userId, [VISITED_KEY] : [] });
+      fireEvent(req.app.io, EVENT_NEW_USER, userId);
     }
     else {
       // We already know this device. Nothing to do here right now.
@@ -45,7 +52,7 @@ router.get('/', function(req, res, next) {
 
 // Get info for all users.
 router.get('/u/', function (req, res, next) {
-  req.app.db.find({}).toArray(function(err, result) {
+  req.app.usersdb.find({}).toArray(function(err, result) {
     if (err) {
       return res.status(500).send(err);
     }
@@ -59,7 +66,7 @@ router.get('/u/:' + ID_PARAM, function(req, res, next) {
 
   const userId = req.params.id;
   console.log("GET User ID: " + userId);
-  req.app.db.findOne({ [userId] : {} }, function(err, result) {
+  req.app.usersdb.findOne({ [userId] : {} }, function(err, result) {
     console.log("RESULT");
     console.log(result);
     if (err) {
@@ -74,6 +81,10 @@ router.get('/u/:' + ID_PARAM, function(req, res, next) {
   });
 });
 
+router.get('/visited/*', function(req, res, next) {
+  return res.status(405).send("Can only POST to /visited/*");
+});
+
 const OTHER_ID_PARAM = 'otherUserId';
 
 // Record that a user has visited another user. No duplicates (or counts) for now - 
@@ -84,24 +95,50 @@ router.post('/visited/:' + OTHER_ID_PARAM, function(req, res, next) {
     return res.status(400).send("No UserID cookie specified!");
   }
   const otherId = req.params[OTHER_ID_PARAM];
-  
-  req.app.db.findOneAndUpdate( 
-    { [ID_PARAM] : userId },        // find parameter
-    { $addToSet : { [VISITED_KEY] : otherId } },  // update operation
-    { upsert : true, returnOriginal: false },      // mongo options
-    function (err, result) {
-      if (err) {
-        console.error(err);
-        return res.status(500).send(err);
-      }
-      console.log(result);
 
-      const updatedUser = result.value;
-      req.app.io.emit(EVENT_NEW_VISIT, updatedUser);
-      return res.send({ "status": "OK", updatedUser });
+  // check if the user already visited other user
+  req.app.usersdb.findOne({ [ID_PARAM] : userId, [VISITED_KEY] : {$elemMatch : { $eq : otherId }} }, function(err, result) {
+    if (err) {
+      console.error(err);
+      return res.status(500).send(err);
+    }
+
+    if (result) {
+      return res.send({ [STATUS_KEY] : "OK", result });
+    }
+    else {
+      // record new visit
+      // How to do this with just one find() ?
+      req.app.usersdb.findOneAndUpdate( 
+        { [ID_PARAM] : userId },        // find parameter
+        { $addToSet : { [VISITED_KEY] : otherId } },   // update operation
+        { upsert : true, returnOriginal: false  },     // mongo options
+        function (err, result) {
+          if (err) {
+            console.error(err);
+            return res.status(500).send(err);
+          }
+
+          const user = result.value;
+          fireEvent(req.app.io, EVENT_NEW_VISIT, user);
+          return res.status(201).send({ [STATUS_KEY] : "OK", user });
+      });
+    }
   });
-  
 });
+
+function fireEvent(io, type, payload) {
+  io.emit(type, payload);
+
+  const str = type + " " + util.inspect(payload) + "\n\n";
+  console.log("logging " + str);
+  fs.appendFile(path.join(__dirname, "../event.log"), str, function(err) {
+    if (err) {
+      console.error("FileSystem error");
+      console.error(err);
+    }
+  });
+}
 
 
 module.exports = router;

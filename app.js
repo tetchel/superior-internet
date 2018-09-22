@@ -38,14 +38,12 @@ MongoClient.connect(dbUrl, {
 
   console.log("Connected successfully to DB");
  
-  app.db = client.db(dbName).collection(usersCollection);
+  app.usersdb = client.db(dbName).collection(usersCollection);
  
   // client.close();
 });
 
-const http = require('http').Server(app);
-const io = require('socket.io')(http);
-app.io = io;
+
 
 app.use('/', indexRouter);
 
@@ -65,6 +63,10 @@ app.use(function(err, req, res, next) {
   res.render('error');
 });
 
+// register socketio and listeners
 
+const http = require('http').Server(app);
+const io = require('socket.io')(http);
+app.io = io;
 
 module.exports = app;
