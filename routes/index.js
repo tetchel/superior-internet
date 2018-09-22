@@ -16,8 +16,8 @@ const EVENT_NEW_VISIT = "new-visit";
 /* GET home page. */
 router.get('/', function(req, res, next) {
 
-  const idCookie = req.cookies[ID_PARAM]
-  const userId = idCookie || Date.now();
+  let idCookie = req.cookies[ID_PARAM]
+  let userId = idCookie || Date.now();
 
   req.app.usersdb.findOne( { [ID_PARAM] : userId }, function(err, result) {
     if (err) {
@@ -54,7 +54,7 @@ router.get('/u/', function (req, res, next) {
     if (err) {
       return res.status(500).send(err);
     }
-    
+
     return res.send(result);
   });
 });
@@ -83,7 +83,7 @@ router.get('/visited/*', function(req, res, next) {
 
 const OTHER_ID_PARAM = 'otherUserId';
 
-// Record that a user has visited another user. No duplicates (or counts) for now - 
+// Record that a user has visited another user. No duplicates (or counts) for now -
 // ie subsequent visits from one user to the same user have no effect.
 router.post('/visited/:' + OTHER_ID_PARAM, function(req, res, next) {
   const userId = req.cookies[ID_PARAM];
@@ -105,7 +105,7 @@ router.post('/visited/:' + OTHER_ID_PARAM, function(req, res, next) {
     else {
       // record new visit
       // How to do this with just one find() ?
-      req.app.usersdb.findOneAndUpdate( 
+      req.app.usersdb.findOneAndUpdate(
         { [ID_PARAM] : userId },        // find parameter
         { $addToSet : { [VISITED_KEY] : otherId } },   // update operation
         { upsert : true, returnOriginal: false  },     // mongo options
