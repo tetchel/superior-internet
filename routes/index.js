@@ -18,7 +18,8 @@ router.get('/', function(req, res, next) {
     // Create the new user into the users database
     req.app.db.find( { [userId] : {} }).toArray(function(err, result) {
       if (err) {
-        reject(err);
+        console.log(err);
+        return;
       }
 
       // see if this userid is taken already
