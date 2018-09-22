@@ -73,7 +73,6 @@ router.get('/u/:' + ID_PARAM, function(req, res, next) {
     }
 
     return res.render('user', { user: userId, visited: util.inspect(result.visited), data: util.inspect(result) })
-
   });
 });
 
