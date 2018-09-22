@@ -119,8 +119,10 @@ class Triangles extends React.Component {
 
   render() {
     return (
-      <div ref={this.initializeLibrary}>
-        {this.props.name}
+      <div>
+        <h1>{JSON.stringify(this.props.data)}</h1>
+        <div ref={this.initializeLibrary}>
+        </div>
       </div>
     )
   }
