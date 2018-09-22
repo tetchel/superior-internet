@@ -1,3 +1,9 @@
 import InferData from './infer-data'
-console.log('loaded!')
-console.log(InferData())
+
+const printToScreen = (text) => {
+  const el = document.createElement('pre')
+  el.textContent = text
+  document.body.append(el)
+}
+
+printToScreen(JSON.stringify(InferData(), null, 2))
