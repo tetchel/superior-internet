@@ -5,7 +5,6 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 
 var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
 
 var app = express();
 
@@ -19,8 +18,31 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+const MongoClient = require('mongodb').MongoClient
+
+const dbUrl = 'mongodb://localhost:27017/';
+const dbName = 'dbb';
+const usersCollection = 'users';
+
+MongoClient.connect(dbUrl, {
+    reconnectTries: Number.MAX_VALUE,
+    reconnectInterval: 1000
+  },
+  function(err, client) {
+  if (err) {
+    console.log("DB INIT ERR");
+    console.log(err);
+    return;
+  }
+
+  console.log("Connected successfully to DB");
+ 
+  app.db = client.db(dbName).collection(usersCollection);
+ 
+  // client.close();
+});
+
 app.use('/', indexRouter);
-app.use('/users', usersRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -37,5 +59,7 @@ app.use(function(err, req, res, next) {
   res.status(err.status || 500);
   res.render('error');
 });
+
+
 
 module.exports = app;
