@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import InferData from './infer-data'
 import Svg from './components/svg'
+import NavGraph from './components/nav-graph'
 import Template from './components/template'
 import Triangles from './components/triangular'
 
@@ -22,15 +23,22 @@ class App extends Component {
     ]
     return (
       <div>
-        {Object.keys(data).map(key => {
-          return this.createComponent(key, data)
-        })}
+        {/*
+        *
+        this.renderComponents(data)
+        /*
+        */}
+        <NavGraph data={data} />
         <Triangles data={data} />
-        <pre>
-          {JSON.stringify(data, null, 2)}
-        </pre>
       </div>
     )
+  }
+
+  renderComponents(data) {
+    return Object.keys(data)
+      .map(key => {
+        return this.createComponent(key, data)
+      })
   }
 
   createComponent(key, data) {
