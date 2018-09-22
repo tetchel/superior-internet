@@ -26,15 +26,13 @@ router.get('/', function(req, res, next) {
 
     if (!idCookie) {
       // first time we've seen this device
-      const existing = typeof(result) !== 'undefined'; //&& result.length > 0;
-      if (existing) {
+      if (result) {
         // name collision (really, will this ever happen?)
         console.log("user already exists somehow");
         userId += Math.floor(Math.random() * 1000);
       }
     }
 
-    const isNew = !result;
     if (!result) {
       // Whether or not the user is actually new, they're missing from the DB.
       console.log("Adding new user " + userId);
@@ -46,7 +44,7 @@ router.get('/', function(req, res, next) {
     }
 
     // Replace this with the homepage, or whatever.
-    return res.render('index', { title: 'Express',  id : userId, isNew : isNew });
+    return res.render('index', { title: 'Express',  id : userId, isNew : !result });
   });
 });
 
@@ -66,18 +64,16 @@ router.get('/u/:' + ID_PARAM, function(req, res, next) {
 
   const userId = req.params.id;
   console.log("GET User ID: " + userId);
-  req.app.usersdb.findOne({ [userId] : {} }, function(err, result) {
-    console.log("RESULT");
-    console.log(result);
+  req.app.usersdb.findOne({ [ID_PARAM] : userId }, function(err, result) {
     if (err) {
       return res.status(500).send(err);
     }
     else if (!result) {
-      console.log("UGH");
-      return res.status(400).send("User not found " + userId);
+      return res.status(400).send("No user with ID " + userId);
     }
 
-    return res.send(result.visited);
+    return res.render('user', { user: userId, visited: util.inspect(result.visited), data: util.inspect(result) })
+
   });
 });
 

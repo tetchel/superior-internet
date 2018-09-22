@@ -36,7 +36,7 @@ MongoClient.connect(dbUrl, {
       return;
     }
 
-    console.log("Connected successfully to DB");
+    console.log("Connected successfully to DB at " + dbUrl);
 
     app.usersdb = client.db(dbName).collection(usersCollection);
 
