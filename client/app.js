@@ -14,16 +14,27 @@ class App extends Component {
   }
 
   render() {
+    const data = InferData()
+    const components = [
+        Svg,
+        Triangles,
+        Template,
+    ]
     return (
       <div>
-        <Svg></Svg>
-        <Triangles/>
-        <Template name="template component" />
+        {Object.keys(data).map(key => {
+          return this.createComponent(key, data)
+        })}
+        <Triangles data={data} />
         <pre>
-          {JSON.stringify(InferData(), null, 2)}
+          {JSON.stringify(data, null, 2)}
         </pre>
       </div>
     )
+  }
+
+  createComponent(key, data) {
+    return <Template key={key} name={`${key} = ${data[key]}`} />
   }
 }
 
