@@ -19,6 +19,6 @@ GET `/u` - Returns JSON array of all User data objects
 
 GET `/u/:id` - Returns JSON of User data object for the requested user
 
-POST `/visited/:visitedId` - Indicate that the user making issuing this request (determined by 'id' cookie) visited the user with id `visitedId`
+POST `/visited/:visitedId` - Indicate that the user issuing this request (determined by 'id' cookie) visited the user with id `visitedId`
 
 
