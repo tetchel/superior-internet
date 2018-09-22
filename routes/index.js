@@ -48,6 +48,10 @@ router.get('/', function(req, res, next) {
   });
 });
 
+router.get('/g/', function(req, res, next) {
+  return res.send("This is where my graph would go... IF I HAD ONE!!");
+});
+
 // Get info for all users.
 router.get('/u/', function (req, res, next) {
   req.app.usersdb.find({}).toArray(function(err, result) {
@@ -76,7 +80,7 @@ router.get('/u/:' + ID_PARAM, function(req, res, next) {
   });
 });
 
-router.get('/visited/*', function(req, res, next) {
+router.get('/v/*', function(req, res, next) {
   return res.status(405).send("Can only POST to /visited/*");
 });
 
@@ -84,7 +88,7 @@ const OTHER_ID_PARAM = 'otherUserId';
 
 // Record that a user has visited another user. No duplicates (or counts) for now -
 // ie subsequent visits from one user to the same user have no effect.
-router.post('/visited/:' + OTHER_ID_PARAM, function(req, res, next) {
+router.post('/v/:' + OTHER_ID_PARAM, function(req, res, next) {
   const userId = req.cookies[ID_PARAM];
   if (!userId) {
     return res.status(400).send("No UserID cookie specified!");
