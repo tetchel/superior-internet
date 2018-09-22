@@ -1,17 +1,22 @@
 import React, { Component } from 'react'
 import p5 from 'p5'
 import Trianglify from 'trianglify'
+import { digest } from 'json-hash'
 
-function createAnimation(element){
+function createAnimation(element, data){
   var sketch = function( p )
   {
+
+    var userdata = data;
+
+    p.preload = function()
+    {
+    };
 
     var funcSource = new p5();
     var pointCloud = new Array();
 
-    //important user data stuff to be plugged in later
-    var randSeed;
-    var userColour;
+    var randSeed = digest(userdata);
 
     var directionx = funcSource.random(0, window.innerWidth);
     var directiony = funcSource.random(0, window.innerHeight);
@@ -23,7 +28,7 @@ function createAnimation(element){
       pointCloud.push([x, y]);
     };
 
-    var pattern = Trianglify({width:window.innerWidth, height:window.innerHeight, points:pointCloud});
+    var pattern = Trianglify({width:window.innerWidth, height:window.innerHeight, points:pointCloud, seed:randSeed});
     var tricanvas = element.appendChild(pattern.canvas());
 
     function newDirection()
@@ -86,11 +91,6 @@ function createAnimation(element){
       pattern.canvas(tricanvas);
     };
 
-    p.preload = function()
-    {
-
-    };
-
     p.setup = function()
     {
       //var cnv = p.createCanvas(window.innerWidth, window.innerHeight);
@@ -120,7 +120,6 @@ class Triangles extends React.Component {
   render() {
     return (
       <div>
-        <h1>{JSON.stringify(this.props.data)}</h1>
         <div ref={this.initializeLibrary}>
         </div>
       </div>
@@ -129,7 +128,7 @@ class Triangles extends React.Component {
 
   initializeLibrary(el) {
 
-    console.log('initialize', createAnimation(el))
+    console.log('initialize', createAnimation(el, this.props.data))
   }
 }
 
