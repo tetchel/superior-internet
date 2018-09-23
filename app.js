@@ -7,6 +7,10 @@ var logger = require('morgan');
 var indexRouter = require('./routes/index');
 
 var app = express();
+var server = require('http').Server(app);
+var io = require('socket.io')(server);
+app.server = server
+app.io = io;
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -77,10 +81,4 @@ app.use(function(err, req, res, next) {
   res.render('error');
 });
 
-// register socketio and listeners
-
-const http = require('http').Server(app);
-const io = require('socket.io')(http);
-app.io = io;
-
-module.exports = app;
+module.exports =  { server: server, app: app };

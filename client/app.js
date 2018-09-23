@@ -29,6 +29,7 @@ class App extends Component {
         <pre>
           {JSON.stringify(data, null, 2)}
         </pre>
+        <Svg></Svg>
       </div>
     )
   }
