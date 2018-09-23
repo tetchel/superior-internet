@@ -12,6 +12,8 @@ class NavGraph extends React.Component {
       <Sigma
         settings={{
           drawEdges: true,
+          minNodeSize: 3,
+          maxNodeSize: 15,
           labelThreshold: 1
         }}
         onClickNode={navigateToNode}

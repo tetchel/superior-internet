@@ -50,11 +50,11 @@ class App extends Component {
 
   createComponent(key, data) {
     const components = [
-      Svg,
+      // Svg,
       VoronoiChart,
       Lines,
-      Square,
-      Template,
+      // Square,
+      // Template,
     ]
 
     let ThisComponent = components[Math.floor(Math.random()*components.length)]
