@@ -71,8 +71,19 @@ var oldGraph = undefined;
 // Get graph data for all users
 router.get('/g/', function (req, res, next) {
 
+  var contype = req.headers['content-type'];
+  var returnJson = false;
+  if (contype && contype.indexOf('application/json') >= 0) {
+    returnJson = true;
+  }
+
   if (oldGraph && !graphNeedsUpdate) {
-    return res.render('graph', { title: "Graph!!!", graphData: oldGraph, /* remove the str later */ 'graphDataStr' : JSON.stringify(oldGraph, null, 2) }); 
+    if (returnJson) {
+      return res.json(oldGraph);
+    }
+    else {
+      return res.render('graph', { title: "Graph!!!", graphData: oldGraph, /* remove the str later */ 'graphDataStr' : JSON.stringify(oldGraph, null, 2) }); 
+    }
   }
 
   req.app.usersdb.find({}).toArray(function(err, result) {
@@ -81,13 +92,14 @@ router.get('/g/', function (req, res, next) {
     }
     graphNeedsUpdate = false;
 
-    console.log("RESULTT");
-    console.log(result);
     let graphdata = { 'nodes' : [], 'edges' : [] };
     var count = 0;
     var edgecount = 0;
     for (user of result) {
       let visited = user[VISITED_KEY];
+      if (typeof(visited) === 'undefined') {
+        visited = [];
+      }
 
       let node = {};
       node['id'] = user[ID_PARAM];
@@ -106,8 +118,13 @@ router.get('/g/', function (req, res, next) {
       }
     }
     console.log("GraphData: " + util.inspect(graphdata));
-
-    return res.render('graph', { title: "Graph!!!", graphData: graphdata, /* remove the str later */ 'graphDataStr' : JSON.stringify(graphdata, null, 2) });
+    
+    if (returnJson) {
+      return res.json(graphdata);
+    }
+    else {
+      return res.render('graph', { title: "Graph!!!", graphData: graphdata, /* remove the str later */ 'graphDataStr' : JSON.stringify(graphdata, null, 2) });
+    }
   });
 });
 
