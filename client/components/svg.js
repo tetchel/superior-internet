@@ -5,12 +5,9 @@ class Svg extends Component {
   constructor() {
     super()
 
-    let io = ioClient.connect('http://localhost:3000', {
-      // 'path': '/'
-    });
-    io.on("new-user", data => console.log("newuser " + data));
-    io.on("new-user", data => console.log("newvisit " + data));
-    console.log("IO INIT'D");
+    let io = ioClient.connect();
+    io.on("new-user", data => console.log("newuser " + JSON.stringify(data)));
+    io.on("new-visit", data => console.log("newvisit " + JSON.stringify(data)));
   }
 
   render() {

@@ -13,6 +13,10 @@ const STATUS_KEY = "status";
 const EVENT_NEW_USER = "new-user";
 const EVENT_NEW_VISIT = "new-visit";
 
+router.get('/socket.io', function(req, res, next) {
+  // Do nothing
+});
+
 /* GET home page. */
 router.get('/', function(req, res, next) {
 
@@ -55,6 +59,10 @@ router.get('/', function(req, res, next) {
       return res.redirect('/u/' + userId);
     }
   });
+});
+
+router.post('/', function(req, res, next) {
+  return res.status(405).send("Can't POST /");
 });
 
 // Get graph data for all users
@@ -163,7 +171,9 @@ router.post('/v/:' + OTHER_ID_PARAM, function(req, res, next) {
           }
 
           const user = result.value;
-          fireEvent(req.app.io, EVENT_NEW_VISIT, user);
+          // userId visited otherId - emit that event
+          // could also emit the whole user object
+          fireEvent(req.app.io, EVENT_NEW_VISIT, { [userId] : otherId });
           return res.status(201).send({ [STATUS_KEY] : "OK", user });
       });
     }
