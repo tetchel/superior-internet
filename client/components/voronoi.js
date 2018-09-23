@@ -20,6 +20,7 @@ var data = Array(15).fill(null).map(() => ({
 
 
 function getRGBFromName(name) {
+  name = digest(name)
   var r = normalize(name[0]);
   var g = normalize(name[1]);
   var b = normalize(name[2]);
@@ -95,6 +96,7 @@ class VoronoiChart extends React.PureComponent {
     } = this.state;
     //console.log(r,g,b);
     const polygons = voronoiDiagram.polygons();
+    console.log('voronoi', name)
     const {r, g, b} = getRGBFromName(this.props.name)
     return (
       <svg
@@ -121,13 +123,7 @@ class VoronoiChart extends React.PureComponent {
             <VoronoiPolygon
               key={digest(polygon)}
               polygon={polygon}
-              fill={(d) => (
-                selected && (d.id === selected.data.id || neighbors[d.id]) ?
-                'url(#voronoi_orange_red)' : 'url(#voronoi_pink_red)'
-              )}
-              fillOpacity={(d) => (
-                neighbors && neighbors[d.id] ? 0.4 : 1
-              )}
+              fill={`rgb(${r}, ${g}, ${b})`}
               stroke="#fff"
               strokeWidth={1}
             />
@@ -148,7 +144,7 @@ class VoronoiChart extends React.PureComponent {
   }
 }
 
-const MyVoronoi = ({ data }) => {
+const MyVoronoi = ({ data, name }) => {
   return <VoronoiChart data={data} name={name} width={400} height={400} margin={{top:0, bottom:0, left:0, right: 0}} />
 }
 
