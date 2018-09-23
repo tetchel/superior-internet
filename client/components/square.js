@@ -1,13 +1,6 @@
 import React, { Component } from 'react'
 
 class Square extends React.Component {
-  props = {}
-
-  constructor(args) {
-    super(args);
-    this.initializeLibrary = this.initializeLibrary.bind(this)
-    console.log("Square!")
-  }
 
   render() {
     return (
@@ -18,9 +11,6 @@ class Square extends React.Component {
     )
   }
 
-  initializeLibrary(el) {
-    console.log('initialize', el)
-  }
 }
 
 export default Square

@@ -1,7 +1,7 @@
 // returns an int [0, 255]
 // from ints and strings
 
-function normalize(input) {
+export function normalize(input) {
 
     let type = typeof(input);
     if (type !== 'string' && type !== 'number') {
@@ -17,5 +17,3 @@ function normalize(input) {
     return input % 255;
     
 }
-
-module.exports = normalize;

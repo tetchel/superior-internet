@@ -1,18 +1,26 @@
 import React, { Component } from 'react'
-import ioClient from 'socket.io-client'
+// import ioClient from 'socket.io-client'
+import { normalize } from '../normalize'
 
 class Svg extends Component {
-  constructor() {
-    super()
-
-    let io = ioClient.connect();
-    io.on("new-user", data => console.log("newuser " + JSON.stringify(data)));
-    io.on("new-visit", data => console.log("newvisit " + JSON.stringify(data)));
-  }
 
   render() {
+    const getKey = index => {
+      const letter = this.props.name
+        ? this.props.name[index]
+        : index
+      normalize(letter)
+    }
+
+    console.log("SVG", this.props.name, getKey(0), getKey(1), getKey(2))
+
     return <svg>
-      <circle cx='50' cy='50' r='50'></circle>
+      <circle
+        cx='50'
+        cy='50'
+        r='50'
+        fill={`rgb(${getKey(0)}, ${getKey(1)}, ${getKey(2)})`}
+      ></circle>
     </svg>
   }
 }

@@ -107,12 +107,9 @@ function createAnimation(element, data){
 
 
 class Triangles extends React.Component {
-  props = {}
-
-  constructor(...args) {
-    super(...args);
+  constructor(args) {
+    super(args);
     this.initializeLibrary = this.initializeLibrary.bind(this)
-
   }
 
   render() {
