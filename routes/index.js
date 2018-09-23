@@ -4,10 +4,12 @@ var router = express.Router();
 const fs = require('fs');
 const path = require('path');
 const util = require('util');
+const namegen = require('gfycat-style-urls')
 
 const ID_PARAM = "id";
 const VISITED_KEY = "visited";
 const STATUS_KEY = "status";
+const STATUS_OK = "OK";
 
 // how to include these in multiple files easily?
 const EVENT_NEW_USER = "new-user";
@@ -21,8 +23,8 @@ router.get('/socket.io', function(req, res, next) {
 router.get('/', function(req, res, next) {
 
   // req.cookies[ID_PARAM] = undefined;
-  let idCookie = req.cookies[ID_PARAM]
-  let userId = idCookie || Date.now();
+  let idCookie = req.cookies[ID_PARAM];
+  let userId = idCookie || namegen.generateCombination(2, '', true);
   userId = userId.toString();
 
   req.app.usersdb.findOne( { [ID_PARAM] : userId }, function(err, result) {
@@ -172,6 +174,10 @@ router.post('/v/:' + OTHER_ID_PARAM, function(req, res, next) {
   }
   const otherId = req.params[OTHER_ID_PARAM];
 
+  if (userId == otherId) {
+    return res.send( { [STATUS_KEY] : "Can't visit yourself" } );
+  }
+
   // check if the user already visited other user
   req.app.usersdb.findOne({ [ID_PARAM] : userId, [VISITED_KEY] : {$elemMatch : { $eq : otherId }} }, function(err, result) {
     if (err) {
@@ -179,8 +185,10 @@ router.post('/v/:' + OTHER_ID_PARAM, function(req, res, next) {
       return res.status(500).send(err);
     }
 
+    // Take no action, and return the old visited data, if this visit had no effect
+    // either because the visit already occurred, or user visited themself
     if (result) {
-      return res.send({ [STATUS_KEY] : "OK", result });
+      return res.send({ [STATUS_KEY] : STATUS_OK, result });
     }
     else {
       // record new visit
@@ -199,7 +207,7 @@ router.post('/v/:' + OTHER_ID_PARAM, function(req, res, next) {
           // userId visited otherId - emit that event
           // could also emit the whole user object
           fireEvent(req.app.io, EVENT_NEW_VISIT, { [userId] : otherId });
-          return res.status(201).send({ [STATUS_KEY] : "OK", user });
+          return res.status(201).send({ [STATUS_KEY] : STATUS_OK, user });
       });
     }
   });
