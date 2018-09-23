@@ -98,7 +98,7 @@ router.get('/g/', function (req, res, next) {
     }
     graphNeedsUpdate = false;
 
-    let graphdata = { 'nodes' : [ { id : "root", x : 0, y : 0, size : 2 } ], 'edges' : [] };
+    let graphdata = { 'nodes' : [ { id : 'root', label : 'alt.net', x : 0, y : 0, size : result.length } ], 'edges' : [] };
     // var count = 0;
     let cols = 5;
     var x = 0;
@@ -152,6 +152,10 @@ router.get('/u/:' + ID_PARAM, function(req, res, next) {
   if (!userVisiting) {
     // you got to get a user id first
     return res.redirect('/');
+  }
+  
+  if (userBeingVisited === 'root') {
+    return res.redirect('/u/' + userVisiting);
   }
 
   console.log("GET User ID: " + userBeingVisited);
