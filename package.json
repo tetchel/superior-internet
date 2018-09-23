@@ -11,8 +11,11 @@
   "dependencies": {
     "@vx/brush": "0.0.165",
     "@vx/clip-path": "0.0.165",
+    "@vx/curve": "0.0.165",
     "@vx/gradient": "0.0.165",
+    "@vx/mock-data": "0.0.165",
     "@vx/scale": "0.0.165",
+    "@vx/shape": "0.0.176",
     "@vx/voronoi": "0.0.170",
     "babel-preset-env": "^1.7.0",
     "babel-preset-react": "^6.24.1",

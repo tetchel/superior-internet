@@ -1,9 +1,13 @@
 import React, { Component } from 'react'
 import InferData from './infer-data'
+// Components
 import Svg from './components/svg'
 import Template from './components/template'
 import Square from './components/square'
 import VoronoiChart from './components/voronoi'
+import Lines from './components/lines'
+
+import { digest } from 'json-hash'
 
 // printToScreen(JSON.stringify(InferData(), null, 2))
 
@@ -16,25 +20,30 @@ class App extends Component {
 
   render() {
     const data = InferData()
-    const components = [
-        Svg,
-        VoronoiChart,
-        Template,
-    ]
     return (
       <div>
         {Object.keys(data).map(key => {
           return this.createComponent(key, data)
         })}
-        <VoronoiChart data={data} />
-        <Svg></Svg>
-        <Square data={data} />
       </div>
     )
   }
 
   createComponent(key, data) {
-    return <Template key={key} name={`${key} = ${data[key]}`} />
+    const components = [
+      Svg,
+      VoronoiChart,
+      Lines,
+      Square,
+      Template,
+    ]
+
+    let ThisComponent = components[Math.floor(Math.random()*components.length)]
+
+    return <ThisComponent
+      key={key}
+      data={data}
+      name={digest(key)} />
   }
 }
 
