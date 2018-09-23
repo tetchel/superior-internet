@@ -19,6 +19,12 @@ router.get('/socket.io', function(req, res, next) {
   // Do nothing
 });
 
+router.get('/favicon.ico', function(req, res, next) {
+  var img = fs.readFileSync('public/favicon.ico');
+  res.writeHead(200, {'Content-Type': 'image/x-icon' });
+  return res.end(img, 'binary');
+});
+
 /* GET home page. */
 router.get('/', function(req, res, next) {
 
@@ -35,6 +41,8 @@ router.get('/', function(req, res, next) {
     if (!idCookie) {
       // first time we've seen this device
       console.log("Cookieless request");
+      // Give them a cookie
+      res.cookie(ID_PARAM, userId);
       if (result) {
         // name collision (really, will this ever happen?)
         console.log("user already exists somehow");
@@ -50,11 +58,11 @@ router.get('/', function(req, res, next) {
           return res.status(500).send(err);
         }
 
-        console.log("REdirecting new user");
+        fireEvent(req.app.io, EVENT_NEW_USER, userId);
+        console.log("Redirecting new user");
         // send the user to their new page
         return res.redirect('/u/' + userId);
       });
-      fireEvent(req.app.io, EVENT_NEW_USER, userId);
     }
     else {
       // Existing user, send them to their page
@@ -125,40 +133,77 @@ function rand(min, max) {
   return Math.floor(Math.random() * (max - min)) + min;
 }
 
-// Get info for a specific user.
 router.get('/u/:' + ID_PARAM, function(req, res, next) {
 
-  const userId = req.params.id;
-  console.log("GET User ID: " + userId);
-  req.app.usersdb.find({}).toArray(function(err, result) {
-    if (err) {
-      return res.status(500).send(err);
-    }
-    console.log("FIND:");
-    console.log(result);
-  });
-  req.app.usersdb.findOne({ [ID_PARAM] : userId }, function(err, result) {
+  const userBeingVisited = req.params.id;
+  const userVisiting = req.cookies[ID_PARAM];
+  console.log("GET User ID: " + userBeingVisited);
+
+  req.app.usersdb.findOne({ [ID_PARAM] : userBeingVisited }, function(err, result) {
     if (err) {
       return res.status(500).send(err);
     }
     else if (!result) {
       console.log(result);
-      return res.status(404).send("No user with ID " + userId);
+      return res.status(404).send("No user with ID " + userBeingVisited);
     }
 
-    return res.render('user', { title: userId, user: userId, visited: util.inspect(result.visited), data: util.inspect(result) })
+    var title;
+    console.log("UserBV " + userBeingVisited + " UserV " + userVisiting);
+    if (userBeingVisited != userVisiting) {
+      console.log(userVisiting + " is visiting " + userBeingVisited);
+      title = userBeingVisited + "'s page";
+
+      // check if the user already visited other user
+      req.app.usersdb.findOne({ [ID_PARAM] : userVisiting, [VISITED_KEY] : {$elemMatch : { $eq : userBeingVisited }} }, function(err, result) {
+        if (err) {
+          console.error(err);
+          return res.status(500).send(err);
+        }
+
+        // Take no action, and return the old visited data, if this visit had no effect
+        // because the visit already occurred
+        if (!result) {
+          // record new visit
+          // How to do this with just one find() ?
+          req.app.usersdb.findOneAndUpdate(
+            { [ID_PARAM] : userVisiting },        // find parameter
+            { $addToSet : { [VISITED_KEY] : userBeingVisited } },   // update operation
+            { upsert : true, returnOriginal: false  },     // mongo options
+            function (err, result) {
+              if (err) {
+                console.error(err);
+                return res.status(500).send(err);
+              }
+
+              const user = result.value;
+              // userId visited otherId - emit that event
+              // could also emit the whole user object
+              fireEvent(req.app.io, EVENT_NEW_VISIT, { [userVisiting] : userBeingVisited });
+              // return res.status(201).send({ [STATUS_KEY] : STATUS_OK, user });
+          });
+        }
+      });
+    }
+    else {
+      title = "Welcome to your page, " + userVisiting;
+    }
+
+    return res.render('user', { title: title, user: userBeingVisited, visited: util.inspect(result.visited), data: util.inspect(result) })
   });
 });
 
+/*
 router.get('/v/*', function(req, res, next) {
   return res.status(405).send("Can only POST to /visited/*");
 });
+*/
 
 const OTHER_ID_PARAM = 'otherUserId';
 
 // Record that a user has visited another user. No duplicates (or counts) for now -
 // ie subsequent visits from one user to the same user have no effect.
-router.post('/v/:' + OTHER_ID_PARAM, function(req, res, next) {
+router.get('/v/:' + OTHER_ID_PARAM, function(req, res, next) {
   const userId = req.cookies[ID_PARAM];
   if (!userId) {
     return res.status(400).send("No UserID cookie specified!");
@@ -169,39 +214,7 @@ router.post('/v/:' + OTHER_ID_PARAM, function(req, res, next) {
     return res.send( { [STATUS_KEY] : "Can't visit yourself" } );
   }
 
-  // check if the user already visited other user
-  req.app.usersdb.findOne({ [ID_PARAM] : userId, [VISITED_KEY] : {$elemMatch : { $eq : otherId }} }, function(err, result) {
-    if (err) {
-      console.error(err);
-      return res.status(500).send(err);
-    }
 
-    // Take no action, and return the old visited data, if this visit had no effect
-    // because the visit already occurred
-    if (result) {
-      return res.send({ [STATUS_KEY] : STATUS_OK, result });
-    }
-    else {
-      // record new visit
-      // How to do this with just one find() ?
-      req.app.usersdb.findOneAndUpdate(
-        { [ID_PARAM] : userId },        // find parameter
-        { $addToSet : { [VISITED_KEY] : otherId } },   // update operation
-        { upsert : true, returnOriginal: false  },     // mongo options
-        function (err, result) {
-          if (err) {
-            console.error(err);
-            return res.status(500).send(err);
-          }
-
-          const user = result.value;
-          // userId visited otherId - emit that event
-          // could also emit the whole user object
-          fireEvent(req.app.io, EVENT_NEW_VISIT, { [userId] : otherId });
-          return res.status(201).send({ [STATUS_KEY] : STATUS_OK, user });
-      });
-    }
-  });
 });
 
 function fireEvent(io, type, payload) {
