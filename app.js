@@ -25,8 +25,8 @@ app.use(express.static(path.join(__dirname, 'dist')));
 
 const MongoClient = require('mongodb').MongoClient
 
-//const dbUrl = 'mongodb://altnet:topsecret@localhost:27017/dbb';
-const dbUrl = 'mongodb://localhost:27017/dbb';
+const dbUrl = 'mongodb://altnet:topsecret@192.168.0.87:27017/dbb';
+//const dbUrl = 'mongodb://localhost:27017/dbb';
 const dbName = 'dbb';
 const usersCollection = 'users';
 
@@ -47,8 +47,8 @@ MongoClient.connect(dbUrl, {
           if(callback) {
             callback(undefined, "Dummy find result");
           } else {
-            return { 
-              toArray: function () { 
+            return {
+              toArray: function () {
                 //do nothing
               }
             }
