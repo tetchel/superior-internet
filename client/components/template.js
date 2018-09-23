@@ -16,7 +16,7 @@ class Template extends React.Component {
   }
 
   initializeLibrary(el) {
-    console.log('initialize', el)
+    // console.log('initialize', el)
   }
 }
 
