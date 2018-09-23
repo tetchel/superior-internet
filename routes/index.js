@@ -98,8 +98,11 @@ router.get('/g/', function (req, res, next) {
     }
     graphNeedsUpdate = false;
 
-    let graphdata = { 'nodes' : [], 'edges' : [] };
-    var count = 0;
+    let graphdata = { 'nodes' : [ { id : "root", x : 0, y : 0, size : 2 } ], 'edges' : [] };
+    // var count = 0;
+    let cols = 5;
+    var x = 0;
+    var y = 0;
     var edgecount = 0;
     for (user of result) {
       let visited = user[VISITED_KEY];
@@ -111,10 +114,18 @@ router.get('/g/', function (req, res, next) {
       node['id'] = user[ID_PARAM];
       let shortname = user[ID_PARAM].replace(/[a-z]/g, '');   // the shortname is just the first letter of each world == the capital letters
       node['label'] = shortname;
-      node['x'] = rand(0, result.length);
-      node['y'] = rand(0, result.length);
+
+      x++;
+      if (x === cols) {
+        x = 0;
+        y++;
+      }
+
+      node['x'] = x;
+      node['y'] = y;
       node['size'] = visited.length + 1;
       graphdata.nodes.push(node);
+      graphdata.edges.push( { id: edgecount++, source: node['id'], target: 'root'} )
 
       for (visit of visited) {
         let edge = {};

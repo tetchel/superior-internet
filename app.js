@@ -60,7 +60,7 @@ MongoClient.connect(dbUrl, {
       };
       console.log("using dummy db");
     }
-    else {  
+    else {
       console.log("Connected successfully to DB at " + dbUrl);
 
       app.usersdb = client.db(dbName).collection(usersCollection);
