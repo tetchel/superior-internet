@@ -6,7 +6,7 @@ block content
   p This user has visited: #{visited}
 
   p DataDump: #{data}
-
+  input(id="data" type='hidden' value=JSON.stringify(data))
   #app
 
 block scripts
