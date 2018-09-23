@@ -19,8 +19,6 @@ GET `/`/ - Registers the user if they're new, and then forward them to their pag
 
 GET `/g/` - Shows the overall network graph - Right now this just returns the JSON that *would* be used to construct the graph.
 
-GET `/u/:id` - Returns user page for user with the given ID. Has the visited data available but doesn't do anything with it.
-
-POST `/v/:visitedId` - Indicate that the user issuing this request (determined by 'id' cookie) visited the user with id `visitedId`. Returns 201 if it's a new visit, and 200 if the visit has already occurred (and therefore the request had no effect).
+GET `/u/:id` - Returns user page for user with the given ID. If the user logged in is not the same as the user page, a visit is recorded.
 
 

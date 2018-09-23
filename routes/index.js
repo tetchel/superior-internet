@@ -137,6 +137,11 @@ router.get('/u/:' + ID_PARAM, function(req, res, next) {
 
   const userBeingVisited = req.params.id;
   const userVisiting = req.cookies[ID_PARAM];
+  if (!userVisiting) {
+    // you got to get a user id first
+    return res.redirect('/');
+  }
+
   console.log("GET User ID: " + userBeingVisited);
 
   req.app.usersdb.findOne({ [ID_PARAM] : userBeingVisited }, function(err, result) {
@@ -191,30 +196,6 @@ router.get('/u/:' + ID_PARAM, function(req, res, next) {
 
     return res.render('user', { title: title, user: userBeingVisited, visited: util.inspect(result.visited), data: util.inspect(result) })
   });
-});
-
-/*
-router.get('/v/*', function(req, res, next) {
-  return res.status(405).send("Can only POST to /visited/*");
-});
-*/
-
-const OTHER_ID_PARAM = 'otherUserId';
-
-// Record that a user has visited another user. No duplicates (or counts) for now -
-// ie subsequent visits from one user to the same user have no effect.
-router.get('/v/:' + OTHER_ID_PARAM, function(req, res, next) {
-  const userId = req.cookies[ID_PARAM];
-  if (!userId) {
-    return res.status(400).send("No UserID cookie specified!");
-  }
-  const otherId = req.params[OTHER_ID_PARAM];
-
-  if (userId == otherId) {
-    return res.send( { [STATUS_KEY] : "Can't visit yourself" } );
-  }
-
-
 });
 
 function fireEvent(io, type, payload) {
