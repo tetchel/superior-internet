@@ -1,8 +1,5 @@
 export default function InferData() {
   const info = {
-    timeOpened:new Date(),
-    timezone:(new Date()).getTimezoneOffset()/60,
-
     pageon: window.location.pathname,
     referrer: document.referrer,
     previousSites: history.length,
