@@ -10,10 +10,10 @@ export function normalize(input) {
     else if (type === 'string') {
         // the input strings are md5 hashes
         // get the mod of the first 1/4 of the md5 (to fit in a 32-bit int)
-        let shortHash = input.substring(0, 8);
+        let shortHash = input.substring(16);
         input = parseInt(input, 16);
     }
 
-    return input % 255;
-    
+    return input*20 % 255;
+
 }

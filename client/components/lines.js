@@ -5,6 +5,8 @@ import { curveMonotoneX } from '@vx/curve';
 import { genDateValue } from '@vx/mock-data';
 import { scaleTime, scaleLinear } from '@vx/scale';
 import { extent, max } from 'd3-array';
+import { normalize } from '../normalize'
+import { digest } from 'json-hash'
 
 function genLines(num) {
   return new Array(num).fill(1).map(() => {
@@ -24,11 +26,15 @@ const y = d => d.value;
 export default ({
   width=500,
   height=500,
+  name
 }) => {
   // bounds
   const xMax = width;
   const yMax = height / 8;
-
+  const r = normalize(name[0]),
+        g = normalize(name[1]),
+        b = normalize(name[2]);
+  console.log(r, g, b);
   // scales
   const xScale = scaleTime({
     range: [0, xMax],
@@ -46,7 +52,7 @@ export default ({
         y={0}
         width={width}
         height={height}
-        fill="#242424"
+        fill={`rgb(${r}, ${g}, ${b})`}
         rx={14}
       />
       {xMax > 8 && series.map((d, i) => {
