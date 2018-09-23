@@ -5,7 +5,7 @@ import { digest } from 'json-hash'
 class Background extends Component {
   constructor(props) {
     super(props);
-    data = digest(props.data);
+    const data = digest(props.data);
 
     var r = normalize(data[0]);
     var g = normalize(data[1]);
