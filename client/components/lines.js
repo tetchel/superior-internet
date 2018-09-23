@@ -44,7 +44,7 @@ export default ({
   const r = normalize(name[0]),
         g = normalize(name[1]),
         b = normalize(name[2]);
-  console.log(r, g, b);
+  //console.log(r, g, b);
   // scales
   const xScale = scaleTime({
     range: [0, xMax],

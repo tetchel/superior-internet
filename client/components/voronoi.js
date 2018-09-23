@@ -6,6 +6,7 @@ import { RectClipPath } from '@vx/clip-path';
 import { scaleLinear } from '@vx/scale';
 import { getCoordsFromEvent } from '@vx/brush';
 import { digest } from 'json-hash';
+import { normalize } from '../normalize'
 
 import { voronoi, VoronoiPolygon } from '@vx/voronoi';
 
@@ -16,6 +17,14 @@ var data = Array(15).fill(null).map(() => ({
   y: Math.random(),
   id:Math.random().toString(36).slice(2),
 }));
+
+
+function getRGBFromName(name) {
+  var r = normalize(name[0]);
+  var g = normalize(name[1]);
+  var b = normalize(name[2]);
+  return {r, g, b}
+}
 
 class VoronoiChart extends React.PureComponent {
 
@@ -84,9 +93,9 @@ class VoronoiChart extends React.PureComponent {
       selected,
       neighbors,
     } = this.state;
-
+    //console.log(r,g,b);
     const polygons = voronoiDiagram.polygons();
-
+    const {r, g, b} = getRGBFromName(this.props.name)
     return (
       <svg
         width={width}
@@ -99,6 +108,7 @@ class VoronoiChart extends React.PureComponent {
           id="voronoi_clip"
           width={innerWidth}
           height={innerHeight}
+          fill={`rgb(${r}, ${g}, ${b})`}
           rx={14}
         />
         <Group

@@ -9,6 +9,7 @@ import Template from './components/template'
 import Square from './components/square'
 import VoronoiChart from './components/voronoi'
 import Lines from './components/lines'
+import Background from './components/backgroundcolour'
 
 // printToScreen(JSON.stringify(InferData(), null, 2))
 
@@ -23,6 +24,7 @@ class App extends Component {
     const data = InferData()
     return (
       <div>
+        <Background data={data} />
         <NavGraph name="GRAPH" data={data} />
         {Object.keys(data).map(key => {
           return this.createComponent(key, data)
