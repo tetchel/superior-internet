@@ -21,7 +21,8 @@ app.use(express.static(path.join(__dirname, 'dist')));
 
 const MongoClient = require('mongodb').MongoClient
 
-const dbUrl = 'mongodb://localhost:27017/';
+//const dbUrl = 'mongodb://altnet:topsecret@localhost:27017/dbb';
+const dbUrl = 'mongodb://localhost:27017/dbb';
 const dbName = 'dbb';
 const usersCollection = 'users';
 
@@ -33,16 +34,29 @@ MongoClient.connect(dbUrl, {
     if (err) {
       console.log("DB INIT ERR");
       console.log(err);
-      return;
+
+      app.usersdb = {
+        findOne: function(object, callback) {
+          callback(undefined, "Dummy findOne result");
+        },
+        find: function(object, callback) {
+          callback(undefined, "Dummy find result");
+        },
+        insert: function(object, callback) {
+          callback(undefined, "Dummy insert result");
+        }
+      };
+      console.log("using dummy db");
+    }
+    else {  
+      console.log("Connected successfully to DB at " + dbUrl);
+
+      app.usersdb = client.db(dbName).collection(usersCollection);
     }
 
-    console.log("Connected successfully to DB at " + dbUrl);
-
-    app.usersdb = client.db(dbName).collection(usersCollection);
 
     // client.close();
   });
-
 
 
 app.use('/', indexRouter);
