@@ -11,7 +11,6 @@ class Background extends Component {
     var g = normalize(data[1]);
     var b = normalize(data[2]);
 
-
     document.querySelector('body').style.backgroundColor = `rgb(${r}, ${g}, ${b})`;
 
   }
