@@ -177,7 +177,7 @@ router.post('/v/:' + OTHER_ID_PARAM, function(req, res, next) {
     }
 
     // Take no action, and return the old visited data, if this visit had no effect
-    // either because the visit already occurred, or user visited themself
+    // because the visit already occurred
     if (result) {
       return res.send({ [STATUS_KEY] : STATUS_OK, result });
     }
