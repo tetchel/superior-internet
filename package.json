@@ -12,6 +12,7 @@
     "@vx/brush": "0.0.165",
     "@vx/clip-path": "0.0.165",
     "@vx/gradient": "0.0.165",
+    "@vx/group": "0.0.170",
     "@vx/scale": "0.0.165",
     "@vx/voronoi": "0.0.170",
     "babel-preset-env": "^1.7.0",

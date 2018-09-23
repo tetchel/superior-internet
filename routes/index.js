@@ -109,7 +109,8 @@ router.get('/g/', function (req, res, next) {
 
       let node = {};
       node['id'] = user[ID_PARAM];
-      node['label'] = count++;
+      let shortname = user[ID_PARAM].replace(/[a-z]/g, '');   // the shortname is just the first letter of each world == the capital letters
+      node['label'] = shortname;
       node['x'] = rand(0, result.length);
       node['y'] = rand(0, result.length);
       node['size'] = visited.length + 1;
@@ -181,7 +182,6 @@ router.get('/u/:' + ID_PARAM, function(req, res, next) {
                 return res.status(500).send(err);
               }
 
-              const user = result.value;
               // userId visited otherId - emit that event
               // could also emit the whole user object
               fireEvent(req.app.io, EVENT_NEW_VISIT, { [userVisiting] : userBeingVisited });
