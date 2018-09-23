@@ -10,7 +10,10 @@ class NavGraph extends React.Component {
   render() {
     return (
       <Sigma
-        settings={{drawEdges: true}}
+        settings={{
+          drawEdges: true,
+          labelThreshold: 1
+        }}
         onClickNode={navigateToNode}
       >
         <EdgeShapes default="tapered"/>
