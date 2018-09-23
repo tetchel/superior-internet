@@ -112,8 +112,15 @@ router.get('/g/', function (req, res, next) {
 
       let node = {};
       node['id'] = user[ID_PARAM];
-      let shortname = user[ID_PARAM].replace(/[a-z]/g, '');   // the shortname is just the first letter of each world == the capital letters
-      node['label'] = shortname;
+      var label;
+      if (req.cookies[ID_PARAM] == user[ID_PARAM]) {
+        label = "Me";
+      }
+      else {
+        label = user[ID_PARAM].replace(/[a-z]/g, '');   // the shortname is just the first letter of each world == the capital letters
+      }
+
+      node['label'] = label;
 
       x++;
       if (x === cols) {
