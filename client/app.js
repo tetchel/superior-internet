@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import InferData from './infer-data'
 import Svg from './components/svg'
 import Template from './components/template'
+import Square from './components/square'
 import Triangles from './components/triangular'
 
 // printToScreen(JSON.stringify(InferData(), null, 2))
@@ -30,6 +31,7 @@ class App extends Component {
           {JSON.stringify(data, null, 2)}
         </pre>
         <Svg></Svg>
+        <Square data={data} />
       </div>
     )
   }

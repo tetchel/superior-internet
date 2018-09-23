@@ -44,7 +44,15 @@ MongoClient.connect(dbUrl, {
           callback(undefined, "Dummy findOne result");
         },
         find: function(object, callback) {
-          callback(undefined, "Dummy find result");
+          if(callback) {
+            callback(undefined, "Dummy find result");
+          } else {
+            return { 
+              toArray: function () { 
+                //do nothing
+              }
+            }
+          }
         },
         insert: function(object, callback) {
           callback(undefined, "Dummy insert result");
