@@ -16,7 +16,7 @@ class Background extends Component {
 
   }
   render() {
-    return <div>TEST BG</div>
+    return null
   }
 }
 
