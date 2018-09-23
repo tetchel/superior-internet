@@ -8,17 +8,18 @@ function createAnimation(element, data){
   {
 
     var userdata = data;
+    var randSeed = userdata;
 
     p.preload = function()
     {
     };
 
+    p.setup = function()
+    {
+    };
+
     var funcSource = new p5();
     var pointCloud = new Array();
-
-    var randSeed = digest(userdata);
-    var varia = funcSource.random(0, 0.2);
-    var granula = funcSource.random(10, 100);
 
     var directionx = funcSource.random(0, window.innerWidth);
     var directiony = funcSource.random(0, window.innerHeight);
@@ -30,7 +31,7 @@ function createAnimation(element, data){
       pointCloud.push([x, y]);
     };
 
-    var pattern = Trianglify({width:window.innerWidth, height:window.innerHeight, points:pointCloud, variance:varia, cell_size:granula, seed:randSeed});
+    var pattern = Trianglify({width:window.innerWidth, height:window.innerHeight, points:pointCloud, seed:randSeed});
     var tricanvas = element.appendChild(pattern.canvas());
 
     function newDirection()
@@ -93,11 +94,6 @@ function createAnimation(element, data){
       pattern.canvas(tricanvas);
     };
 
-    p.setup = function()
-    {
-      //var cnv = p.createCanvas(window.innerWidth, window.innerHeight);
-    };
-
     p.draw = function()
     {
       movePoints();
@@ -129,8 +125,8 @@ class Triangles extends React.Component {
   }
 
   initializeLibrary(el) {
-
-    console.log('initialize', createAnimation(el, this.props.data))
+    const data = JSON.parse(document.getElementById('data').value);
+    console.log('initialize', createAnimation(el, data))
   }
 }
 
