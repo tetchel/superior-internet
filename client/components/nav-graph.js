@@ -16,6 +16,9 @@ class NavGraph extends React.Component {
           maxNodeSize: 15,
           labelThreshold: 1
         }}
+        style={{
+          height: `${window.innerHeight / 2}px`,
+        }}
         onClickNode={navigateToNode}
       >
         <EdgeShapes default="tapered"/>
