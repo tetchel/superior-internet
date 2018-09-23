@@ -74,7 +74,7 @@ router.get('/g/', function (req, res, next) {
       node['label'] = count++;
       node['x'] = rand(0, result.length);
       node['y'] = rand(0, result.length);
-      node['size'] = visited.length;
+      node['size'] = visited.length + 1;
       graphdata.nodes.push(node);
 
       for (visit of visited) {
