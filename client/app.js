@@ -26,10 +26,7 @@ class App extends Component {
         {Object.keys(data).map(key => {
           return this.createComponent(key, data)
         })}
-        <Triangles data={data} />
-        <pre>
-          {JSON.stringify(data, null, 2)}
-        </pre>
+        <VoronoiChart data={data} />
         <Svg></Svg>
         <Square data={data} />
       </div>

@@ -5,12 +5,13 @@ import { GradientOrangeRed, GradientPinkRed } from '@vx/gradient';
 import { RectClipPath } from '@vx/clip-path';
 import { scaleLinear } from '@vx/scale';
 import { getCoordsFromEvent } from '@vx/brush';
+import { digest } from 'json-hash';
 
 import { voronoi, VoronoiPolygon } from '@vx/voronoi';
 
 const neighborRadius = 50;
 
-const data = Array(150).fill(null).map(() => ({
+const data = Array(15).fill(null).map(() => ({
   x: Math.random(),
   y: Math.random(),
   id: Math.random().toString(36).slice(2),
@@ -18,7 +19,7 @@ const data = Array(150).fill(null).map(() => ({
 
 class VoronoiChart extends React.PureComponent {
   static getUpdatedState(props) {
-    const { width, height, margin } = props;
+    let { width, height, margin} = props;
     const innerWidth = width - margin.left - margin.right;
     const innerHeight = height - margin.top - margin.bottom;
 
@@ -52,7 +53,6 @@ class VoronoiChart extends React.PureComponent {
 
   constructor(props) {
     super(props);
-    this.handleMouseMove = this.handleMouseMove.bind(this);
     this.state = VoronoiChart.getUpdatedState(props);
   }
 
@@ -62,23 +62,6 @@ class VoronoiChart extends React.PureComponent {
       nextProps.height !== this.props.height
     ) {
       this.setState(VoronoiChart.getUpdatedState(nextProps));
-    }
-  }
-
-  handleMouseMove(event) {
-    const { voronoiDiagram } = this.state;
-    const { x, y } = getCoordsFromEvent(this.svg, event);
-    const closest = voronoiDiagram.find(x, y, neighborRadius);
-    if (closest) {
-      const neighbors = {};
-      const cell = voronoiDiagram.cells[closest.index];
-      cell.halfedges.forEach((index) => {
-        const edge = voronoiDiagram.edges[index];
-        const { left, right } = edge;
-        if (left !== closest) neighbors[left.data.id] = true;
-        else if (right !== closest) neighbors[right.id] = true;
-      })
-      this.setState({ selected: closest, neighbors });
     }
   }
 
@@ -115,12 +98,11 @@ class VoronoiChart extends React.PureComponent {
           top={margin.top}
           left={margin.left}
           clipPath="url(#voronoi_clip)"
-          onMouseMove={this.handleMouseMove}
-          onMouseLeave={() => { this.setState({ selected: null, neighbors: null }); }}
+
         >
           {polygons.map((polygon) => (
             <VoronoiPolygon
-              key={'things'}
+              key={digest(polygon)}
               polygon={polygon}
               fill={(d) => (
                 selected && (d.id === selected.data.id || neighbors[d.id]) ?
@@ -135,7 +117,7 @@ class VoronoiChart extends React.PureComponent {
           ))}
           {data.map((d) => (
             <circle
-              key={'stuff'}
+              key={digest(d)}
               r={2}
               cx={xScale(d.x)}
               cy={yScale(d.y)}
@@ -148,3 +130,9 @@ class VoronoiChart extends React.PureComponent {
     );
   }
 }
+
+const MyVoronoi = ({ data }) => {
+  return <VoronoiChart data={data} width={500} height={500} margin={{top:0, bottom:0, left:0, right: 0}} />
+}
+
+export default MyVoronoi
