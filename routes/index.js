@@ -73,19 +73,15 @@ var oldGraph = undefined;
 // Get graph data for all users
 router.get('/g/', function (req, res, next) {
 
+  /*
   var contype = req.headers['content-type'];
   var returnJson = false;
   if (contype && contype.indexOf('application/json') >= 0) {
     returnJson = true;
-  }
+  }*/
 
   if (oldGraph && !graphNeedsUpdate) {
-    if (returnJson) {
       return res.json(oldGraph);
-    }
-    else {
-      return res.render('graph', { title: "Graph!!!", graphData: oldGraph, /* remove the str later */ 'graphDataStr' : JSON.stringify(oldGraph, null, 2) }); 
-    }
   }
 
   req.app.usersdb.find({}).toArray(function(err, result) {
@@ -121,12 +117,7 @@ router.get('/g/', function (req, res, next) {
     }
     console.log("GraphData: " + util.inspect(graphdata));
     
-    if (returnJson) {
-      return res.json(graphdata);
-    }
-    else {
-      return res.render('graph', { title: "Graph!!!", graphData: graphdata, /* remove the str later */ 'graphDataStr' : JSON.stringify(graphdata, null, 2) });
-    }
+    return res.json(graphdata);
   });
 });
 
