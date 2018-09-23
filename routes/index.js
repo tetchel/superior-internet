@@ -65,13 +65,21 @@ router.post('/', function(req, res, next) {
   return res.status(405).send("Can't POST /");
 });
 
+var graphNeedsUpdate = true;
+var oldGraph = undefined;
+
 // Get graph data for all users
 router.get('/g/', function (req, res, next) {
+
+  if (oldGraph && !graphNeedsUpdate) {
+    return res.render('graph', { title: "Graph!!!", graphData: oldGraph, /* remove the str later */ 'graphDataStr' : JSON.stringify(oldGraph, null, 2) }); 
+  }
 
   req.app.usersdb.find({}).toArray(function(err, result) {
     if (err) {
       return res.status(500).send(err);
     }
+    graphNeedsUpdate = false;
 
     console.log("RESULTT");
     console.log(result);
@@ -94,7 +102,7 @@ router.get('/g/', function (req, res, next) {
         edge['id'] = edgecount++;
         edge['source'] = node['id'];
         edge['target'] = visit;
-        graphdata.edges.push(edge)
+        graphdata.edges.push(edge);
       }
     }
     console.log("GraphData: " + util.inspect(graphdata));
@@ -182,9 +190,11 @@ router.post('/v/:' + OTHER_ID_PARAM, function(req, res, next) {
 
 function fireEvent(io, type, payload) {
   io.emit(type, payload);
+  graphNeedsUpdate = true;
 
-  const str = type + " " + util.inspect(payload) + "\n\n";
+  const str = Date.now() + " " + type + " " + util.inspect(payload) + "\n\n";
   console.log("logging " + str);
+  // TODO time
   fs.appendFile(path.join(__dirname, "../event.log"), str, function(err) {
     if (err) {
       console.error("FileSystem error");
