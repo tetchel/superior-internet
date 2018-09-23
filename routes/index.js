@@ -19,6 +19,7 @@ router.get('/', function(req, res, next) {
   // req.cookies[ID_PARAM] = undefined;
   let idCookie = req.cookies[ID_PARAM]
   let userId = idCookie || Date.now();
+  userId = userId.toString();
 
   req.app.usersdb.findOne( { [ID_PARAM] : userId }, function(err, result) {
     if (err) {
@@ -43,6 +44,7 @@ router.get('/', function(req, res, next) {
           return res.status(500).send(err);
         }
 
+        console.log("REdirecting new user");
         // send the user to their new page
         return res.redirect('/u/' + userId);
       });
@@ -63,6 +65,8 @@ router.get('/g/', function (req, res, next) {
       return res.status(500).send(err);
     }
 
+    console.log("RESULTT");
+    console.log(result);
     let graphdata = { 'nodes' : [], 'edges' : [] };
     var count = 0;
     var edgecount = 0;
@@ -100,6 +104,13 @@ router.get('/u/:' + ID_PARAM, function(req, res, next) {
 
   const userId = req.params.id;
   console.log("GET User ID: " + userId);
+  req.app.usersdb.find({}).toArray(function(err, result) {
+    if (err) {
+      return res.status(500).send(err);
+    }
+    console.log("FIND:");
+    console.log(result);
+  });
   req.app.usersdb.findOne({ [ID_PARAM] : userId }, function(err, result) {
     if (err) {
       return res.status(500).send(err);
