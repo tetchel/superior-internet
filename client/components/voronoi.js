@@ -149,7 +149,7 @@ class VoronoiChart extends React.PureComponent {
 }
 
 const MyVoronoi = ({ data }) => {
-  return <VoronoiChart data={data} name={name} width={500} height={500} margin={{top:0, bottom:0, left:0, right: 0}} />
+  return <VoronoiChart data={data} name={name} width={400} height={400} margin={{top:0, bottom:0, left:0, right: 0}} />
 }
 
 export default MyVoronoi
