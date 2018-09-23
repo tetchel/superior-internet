@@ -9,6 +9,14 @@ function createAnimation(element, data){
 
     var userdata = data;
     var randSeed = userdata;
+    var funcSource = new p5();
+    var pointCloud = new Array();
+    funcSource.randomSeed(randSeed);
+    var speed = 1.0;
+    var directionx = funcSource.random(0, window.innerWidth);
+    var directiony = funcSource.random(0, window.innerHeight);
+    var distancex;
+    var distancey;
 
     p.preload = function()
     {
@@ -17,12 +25,6 @@ function createAnimation(element, data){
     p.setup = function()
     {
     };
-
-    var funcSource = new p5();
-    var pointCloud = new Array();
-
-    var directionx = funcSource.random(0, window.innerWidth);
-    var directiony = funcSource.random(0, window.innerHeight);
 
     for (var i = 0; i < 100; i++)
     {
@@ -36,17 +38,12 @@ function createAnimation(element, data){
 
     function newDirection()
     {
-      var rand = funcSource.random(0,100);
-      if(rand >= 50)
-      {
         directionx = funcSource.random(0, window.innerWidth);
         directiony = funcSource.random(0, window.innerHeight);
-      };
     };
 
     function movePoints()
     {
-      var speed = 1.0;
 
       for(var i = 0; i < pointCloud.length; i++)
       {
@@ -54,8 +51,8 @@ function createAnimation(element, data){
         if(pointCloud[i][0] < directionx && pointCloud[i][1] < directiony)
         {
           newDirection();
-          var distancex = directionx - pointCloud[i][0];
-          var distancey = directiony - pointCloud[i][1];
+          distancex = directionx - pointCloud[i][0];
+          distancey = directiony - pointCloud[i][1];
 
             pointCloud[i][0] += 0.5*speed;
             pointCloud[i][1] += 0.5*speed;
@@ -63,8 +60,8 @@ function createAnimation(element, data){
         else if(pointCloud[i][0] > directionx && pointCloud[i][1] > directiony)
         {
           newDirection();
-          var distancex = pointCloud[i][0] - directionx;
-          var distancey = pointCloud[i][1] - directiony;
+          distancex = pointCloud[i][0] - directionx;
+          distancey = pointCloud[i][1] - directiony;
 
             pointCloud[i][0] += 0.5*speed;
             pointCloud[i][1] += 0.5*speed;
@@ -73,8 +70,8 @@ function createAnimation(element, data){
         else if(pointCloud[i][0] > directionx && pointCloud[i][1] < directiony)
         {
           newDirection();
-          var distancex = pointCloud[i][0] - directionx;
-          var distancey = directiony - pointCloud[i][1];
+          distancex = pointCloud[i][0] - directionx;
+          distancey = directiony - pointCloud[i][1];
 
             pointCloud[i][0] -= 0.5*speed;
             pointCloud[i][1] -= 0.5*speed;
@@ -83,8 +80,8 @@ function createAnimation(element, data){
         else if(pointCloud[i][0] < directionx && pointCloud[i][1] > directiony)
         {
           newDirection();
-          var distancex = directionx - pointCloud[i][0];
-          var distancey = pointCloud[i][1] - directiony;
+          distancex = directionx - pointCloud[i][0];
+          distancey = pointCloud[i][1] - directiony;
 
             pointCloud[i][0] -= 0.5*speed;
             pointCloud[i][1] -= 0.5*speed;
@@ -107,12 +104,9 @@ function createAnimation(element, data){
 
 
 class Triangles extends React.Component {
-  props = {}
-
-  constructor(...args) {
-    super(...args);
+  constructor(args) {
+    super(args);
     this.initializeLibrary = this.initializeLibrary.bind(this)
-
   }
 
   render() {

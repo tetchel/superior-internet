@@ -1,12 +1,10 @@
 import React, { Component } from 'react'
 
 class Template extends React.Component {
-  props = {}
 
-  constructor(...args) {
-    super(...args);
+  constructor(args) {
+    super(args);
     this.initializeLibrary = this.initializeLibrary.bind(this)
-
   }
 
   render() {
