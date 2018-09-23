@@ -11,17 +11,24 @@ import { voronoi, VoronoiPolygon } from '@vx/voronoi';
 
 const neighborRadius = 50;
 
-const data = Array(15).fill(null).map(() => ({
+var data = Array(15).fill(null).map(() => ({
   x: Math.random(),
   y: Math.random(),
-  id: Math.random().toString(36).slice(2),
+  id:Math.random().toString(36).slice(2),
 }));
 
 class VoronoiChart extends React.PureComponent {
+
   static getUpdatedState(props) {
-    let { width, height, margin} = props;
+    let { width, height, margin, name} = props;
     const innerWidth = width - margin.left - margin.right;
     const innerHeight = height - margin.top - margin.bottom;
+
+    data = Array(15).fill(null).map(() => ({
+      x: Math.random(),
+      y: Math.random(),
+      id:name,
+    }));
 
     const xScale = scaleLinear({
       domain: extent(data, d => d.x),
@@ -132,7 +139,7 @@ class VoronoiChart extends React.PureComponent {
 }
 
 const MyVoronoi = ({ data }) => {
-  return <VoronoiChart data={data} width={500} height={500} margin={{top:0, bottom:0, left:0, right: 0}} />
+  return <VoronoiChart data={data} name={name} width={500} height={500} margin={{top:0, bottom:0, left:0, right: 0}} />
 }
 
 export default MyVoronoi

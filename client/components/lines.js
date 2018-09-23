@@ -14,20 +14,30 @@ function genLines(num) {
   })
 }
 
-const series = genLines(12);
-const data = series.reduce((rec, d) => {
-  return rec.concat(d)
-}, []);
-
-// accessors
-const x = d => d.date;
-const y = d => d.value;
+// const series = genLines(12);
+// const _data = series.reduce((rec, d) => {
+//   return rec.concat(d)
+// }, []);
+//
+// // accessors
+// const x = d => d.date;
+// const y = d => d.value;
 
 export default ({
   width=500,
   height=500,
-  name
+  name,
+  data
 }) => {
+
+  const series = genLines(12);
+  const _data = series.reduce((rec, d) => {
+    return rec.concat(d)
+  }, []);
+
+  // accessors
+  const x = d => d.date;
+  const y = d => d.value;
   // bounds
   const xMax = width;
   const yMax = height / 8;
@@ -38,11 +48,11 @@ export default ({
   // scales
   const xScale = scaleTime({
     range: [0, xMax],
-    domain: extent(data, x),
+    domain: extent(_data, x),
   });
   const yScale = scaleLinear({
     range: [yMax, 0],
-    domain: [0, max(data, y)],
+    domain: [0, max(_data, y)],
   });
 
   return (
