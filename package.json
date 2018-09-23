@@ -9,9 +9,16 @@
     "start": "concurrently --kill-others \"npm run client\" \"npm run server-dev\""
   },
   "dependencies": {
+    "@vx/brush": "0.0.165",
+    "@vx/clip-path": "0.0.165",
+    "@vx/gradient": "0.0.165",
+    "@vx/scale": "0.0.165",
+    "@vx/voronoi": "0.0.170",
     "babel-preset-env": "^1.7.0",
     "babel-preset-react": "^6.24.1",
     "cookie-parser": "~1.4.3",
+    "d3-array": "^1.2.4",
+    "d3-voronoi": "^1.1.4",
     "debug": "~2.6.9",
     "express": "~4.16.0",
     "http-errors": "~1.6.2",
@@ -23,7 +30,6 @@
     "p5": "^0.7.2",
     "react": "^16.5.2",
     "react-dom": "^16.5.2",
-    "react-p5-wrapper": "0.0.4",
     "socket.io": "^2.1.1",
     "trianglify": "^1.2.0"
   },
