@@ -27,6 +27,7 @@ class App extends Component {
       <div>
         <Background data={data} />
         <NavGraph name="GRAPH" data={data} />
+        <div></div>
         {Object.keys(data).map(key => {
           return this.createComponent(key, data)
         })}

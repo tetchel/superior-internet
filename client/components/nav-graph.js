@@ -12,7 +12,7 @@ class NavGraph extends React.Component {
       <Sigma
         settings={{
           drawEdges: true,
-          minNodeSize: 3,
+          minNodeSize: 8,
           maxNodeSize: 15,
           labelThreshold: 1
         }}
