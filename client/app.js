@@ -10,7 +10,7 @@ import Square from './components/square'
 import VoronoiChart from './components/voronoi'
 import Lines from './components/lines'
 import Background from './components/backgroundcolour'
-import MyGrid from './components/gridlayout'
+
 
 // printToScreen(JSON.stringify(InferData(), null, 2))
 
@@ -30,13 +30,13 @@ class App extends Component {
         {Object.keys(data).map(key => {
           return this.createComponent(key, data)
         })}
-<MyGrid>
+
         {/*
         */
         this.renderComponents(data)
         /*
         */}
-</MyGrid>
+
       </div>
     )
   }
