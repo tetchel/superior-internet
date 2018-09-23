@@ -1,37 +1,25 @@
 import React, { Component } from 'react'
-import {Sigma, RandomizeNodePositions, RelativeSize} from 'react-sigma';
+import {Sigma, ForceAtlas2, EdgeShapes, NodeShapes, RandomizeNodePositions, RelativeSize, LoadJSON} from 'react-sigma';
 
+function getGraph() {
+  return fetch('/g')
+    .then(d => d.json())
+}
 
 class NavGraph extends React.Component {
-  state = {
-    graph: {
-      nodes:[{id:"n1", label:"Alice"}, {id:"n2", label:"Rabbit"}],
-      edges:[{id:"e1",source:"n1",target:"n2",label:"SEES"}]
-    }
-  }
-
-  constructor(props) {
-    super(props);
-
-    function getGraph() {
-      return fetch('/g')
-        .then(d => d.json())
-    }
-
-    getGraph()
-      .then(data => {
-        this.setState({
-          graph: data
-        })
-      })
-  }
-
   render() {
-    console.log("Graph", this.state.graph)
     return (
-      <Sigma graph={this.state.graph} settings={{drawEdges: true, clone: false}}>
-        <RelativeSize initialSize={15}/>
-        <RandomizeNodePositions/>
+      <Sigma
+        settings={{drawEdges: true}}
+        onClickNode={navigateToNode}
+      >
+        <EdgeShapes default="tapered"/>
+        <NodeShapes default="star"/>
+        <LoadJSON path={'/g/'}>
+          <RandomizeNodePositions>
+            <RelativeSize initialSize={8}/>
+          </RandomizeNodePositions>
+        </LoadJSON>
       </Sigma>
     )
   }
@@ -39,3 +27,7 @@ class NavGraph extends React.Component {
 
 export default NavGraph
 
+function navigateToNode(event) {
+  const {id} = event.data.node
+  window.location = `/u/${id}`
+}
