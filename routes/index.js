@@ -115,6 +115,7 @@ router.get('/g/', function (req, res, next) {
       var label;
       if (req.cookies[ID_PARAM] == user[ID_PARAM]) {
         label = "Me";
+        node['color'] = '#eeeeee';
       }
       else {
         label = user[ID_PARAM].replace(/[a-z]/g, '');   // the shortname is just the first letter of each world == the capital letters
