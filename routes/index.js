@@ -87,7 +87,7 @@ router.get('/g/', function (req, res, next) {
     }
     console.log("GraphData: " + util.inspect(graphdata));
 
-    return res.render('graph', { graphData: graphdata, /* remove the str later */ 'graphDataStr' : JSON.stringify(graphdata, null, 2) });
+    return res.render('graph', { title: "Graph!!!", graphData: graphdata, /* remove the str later */ 'graphDataStr' : JSON.stringify(graphdata, null, 2) });
   });
 });
 
