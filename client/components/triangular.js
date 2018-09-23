@@ -17,6 +17,8 @@ function createAnimation(element, data){
     var pointCloud = new Array();
 
     var randSeed = digest(userdata);
+    var varia = funcSource.random(0, 0.2);
+    var granula = funcSource.random(10, 100);
 
     var directionx = funcSource.random(0, window.innerWidth);
     var directiony = funcSource.random(0, window.innerHeight);
@@ -28,7 +30,7 @@ function createAnimation(element, data){
       pointCloud.push([x, y]);
     };
 
-    var pattern = Trianglify({width:window.innerWidth, height:window.innerHeight, points:pointCloud, seed:randSeed});
+    var pattern = Trianglify({width:window.innerWidth, height:window.innerHeight, points:pointCloud, variance:varia, cell_size:granula, seed:randSeed});
     var tricanvas = element.appendChild(pattern.canvas());
 
     function newDirection()

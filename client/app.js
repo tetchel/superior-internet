@@ -19,6 +19,7 @@ class App extends Component {
         Svg,
         Triangles,
         Template,
+        GLBox,
     ]
     return (
       <div>
