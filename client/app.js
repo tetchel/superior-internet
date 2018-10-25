@@ -22,7 +22,6 @@ class App extends Component {
     // console.log(InferData())
 
     setInterval( () => {
-      console.log("refresh");
       window.location.reload();
     }, 10000);
   }

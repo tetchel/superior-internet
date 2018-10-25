@@ -40,7 +40,7 @@ router.get('/', function(req, res, next) {
 
     if (!idCookie) {
       // first time we've seen this device
-      console.log("Cookieless request");
+      console.log("A new user!");
       // Give them a cookie
       res.cookie(ID_PARAM, userId);
       if (result) {
@@ -128,6 +128,7 @@ router.get('/g/', function (req, res, next) {
         x = 0;
         y++;
       }
+      // console.log(`x ${x} y ${y}`);
 
       node['x'] = x;
       node['y'] = y;
@@ -143,8 +144,9 @@ router.get('/g/', function (req, res, next) {
         graphdata.edges.push(edge);
       }
     }
-    console.log("GraphData: " + util.inspect(graphdata));
-    
+    //console.log("GraphData: " + util.inspect(graphdata));
+    console.log(`The graph has ${graphdata.nodes.length} nodes and ${graphdata.edges.length} edges :)`);
+
     return res.json(graphdata);
   });
 });
@@ -161,7 +163,7 @@ router.get('/u/:' + ID_PARAM, function(req, res, next) {
     // you got to get a user id first
     return res.redirect('/');
   }
-  
+
   if (userBeingVisited === 'root') {
     return res.redirect('/u/' + userVisiting);
   }
@@ -178,10 +180,9 @@ router.get('/u/:' + ID_PARAM, function(req, res, next) {
     }
 
     var title;
-    console.log("UserBV " + userBeingVisited + " UserV " + userVisiting);
     if (userBeingVisited != userVisiting) {
       console.log(userVisiting + " is visiting " + userBeingVisited);
-      title = userBeingVisited + "'s page";
+      title = "alt.net | " + userBeingVisited;
 
       // check if the user already visited other user
       req.app.usersdb.findOne({ [ID_PARAM] : userVisiting, [VISITED_KEY] : {$elemMatch : { $eq : userBeingVisited }} }, function(err, result) {
@@ -215,6 +216,7 @@ router.get('/u/:' + ID_PARAM, function(req, res, next) {
     }
     else {
       title = "Welcome to your page, " + userVisiting;
+      console.log(userVisiting + " is checking out their graph");
     }
 
     return res.render('user', { title: title, user: userBeingVisited, visited: util.inspect(result.visited), data: util.inspect(result) })
