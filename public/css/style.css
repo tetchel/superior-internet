@@ -6,3 +6,7 @@ html, body {
 a {
   color: #00B7FF;
 }
+
+#graph {
+  margin-bottom: 5em;
+}

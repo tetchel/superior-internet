@@ -9,26 +9,28 @@ function getGraph() {
 class NavGraph extends React.Component {
   render() {
     return (
-      <Sigma
-        settings={{
-          drawEdges: true,
-          minNodeSize: 8,
-          maxNodeSize: 15,
-          labelThreshold: 1
-        }}
-        style={{
-          height: `${window.innerHeight / 2}px`,
-        }}
-        onClickNode={navigateToNode}
-      >
-        <EdgeShapes default="tapered"/>
-        <NodeShapes default="star"/>
-        <LoadJSON path={'/g/'}>
-          <RandomizeNodePositions>
-            <RelativeSize initialSize={8}/>
-          </RandomizeNodePositions>
-        </LoadJSON>
-      </Sigma>
+      <div id="graph">
+        <Sigma
+          settings={{
+            drawEdges: true,
+            minNodeSize: 8,
+            maxNodeSize: 15,
+            labelThreshold: 1
+          }}
+          style={{
+            height: `${window.innerHeight / 2}px`,
+          }}
+          onClickNode={navigateToNode}
+        >
+          <EdgeShapes default="tapered"/>
+          <NodeShapes default="star"/>
+          <LoadJSON path={'/g/'}>
+            <RandomizeNodePositions>
+              <RelativeSize initialSize={8}/>
+            </RandomizeNodePositions>
+          </LoadJSON>
+        </Sigma>
+      </div>
     )
   }
 }

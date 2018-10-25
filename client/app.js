@@ -15,10 +15,16 @@ import Background from './components/backgroundcolour'
 // printToScreen(JSON.stringify(InferData(), null, 2))
 
 class App extends Component {
+
   constructor() {
     super()
     console.log('app loaded')
-    console.log(InferData())
+    // console.log(InferData())
+
+    setInterval( () => {
+      console.log("refresh");
+      window.location.reload();
+    }, 10000);
   }
 
   render() {

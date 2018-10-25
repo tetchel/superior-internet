@@ -25,7 +25,10 @@ app.use(express.static(path.join(__dirname, 'dist')));
 
 const MongoClient = require('mongodb').MongoClient
 
-const dbUrl = 'mongodb://altnet:topsecret@192.168.0.87:27017/dbb';
+const DB_HOST = "localhost";
+//const DB_CREDS = "altnet:topsecret@"
+const DB_CREDS = "";
+const dbUrl = `mongodb://${DB_CREDS}${DB_HOST}:27017/dbb'`
 //const dbUrl = 'mongodb://localhost:27017/dbb';
 const dbName = 'dbb';
 const usersCollection = 'users';
