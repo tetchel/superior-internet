@@ -11,7 +11,7 @@ const VISITED_KEY = "visited";
 const STATUS_KEY = "status";
 const STATUS_OK = "OK";
 
-// how to include these in multiple files easily?
+// how to include these in multiple files easily?f
 const EVENT_NEW_USER = "new-user";
 const EVENT_NEW_VISIT = "new-visit";
 
@@ -215,7 +215,7 @@ router.get('/u/:' + ID_PARAM, function(req, res, next) {
       });
     }
     else {
-      title = "Welcome to your page, " + userVisiting;
+      title = "alt.net | " + userVisiting;
       console.log(userVisiting + " is checking out their graph");
     }
 
